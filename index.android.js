@@ -23,7 +23,7 @@ import Animated2 from './Animated2'
 import Animated3 from './Animated3'
 import Animated4 from './Animated4'
 
-class AwesomeProject2 extends Component {
+class AwesomeProject extends Component {
 
 	//构造
   	constructor(props)
@@ -151,4 +151,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-AppRegistry.registerComponent('AwesomeProject', () => AwesomeProject2);
+AppRegistry.registerComponent('AwesomeProject', () => AwesomeProject);

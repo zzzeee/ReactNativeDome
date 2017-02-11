@@ -59,7 +59,6 @@ __tests__
 .babelrc
 .buckconfig
 .flowconfig
-package.json
 yarn.lock
 .watchmanconfig
 .gitattributes

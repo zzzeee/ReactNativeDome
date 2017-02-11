@@ -56,29 +56,29 @@ export default class AreaList extends Component {
       return this.dataLoading();
     }
 
-    //automaticallyAdjustContentInsets={false}
-    //contentContainerStyle={styles.list_view}
-    // return (
-    //   <View>
-    //     <ListView 
-    //       dataSource={this.state.dataSource} 
-    //       renderRow={this.readRow} 
-    //       onEndReached={this.data_end}
-    //       onEndReachedThreshold={10}
-    //     />
-    //   </View>
-    // );
-
+    // automaticallyAdjustContentInsets={false}
+    // contentContainerStyle={styles.list_view}
     return (
-      <ScrollView 
-        ref={(scrollView) => { 
-          console.log(scrollView);
-          _scrollView = scrollView; 
-        }}
-        style={styles.scrollView}>
-        {this.state.list.map(this.createCardRow)}
-      </ScrollView>
+      <View>
+        <ListView 
+          dataSource={this.state.dataSource} 
+          renderRow={this.readRow} 
+          onEndReached={this.data_end}
+          onEndReachedThreshold={10}
+        />
+      </View>
     );
+
+    // return (
+    //   <ScrollView 
+    //     ref={(scrollView) => { 
+    //       console.log(scrollView);
+    //       _scrollView = scrollView; 
+    //     }}
+    //     style={styles.scrollView}>
+    //     {this.state.list.map(this.createCardRow)}
+    //   </ScrollView>
+    // );
   }
 
   //获取数据
