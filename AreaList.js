@@ -18,8 +18,6 @@ import {
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
-//const myIcon = (<Icon name="rocket" size={30} color="#900" />)
-//import C_Button from './test/basic/C_Button';
 import Toast from 'react-native-root-toast';
 
  var URL = 'http://vpn.jingtaomart.com/api/RegionController/getRegionList';
@@ -32,25 +30,17 @@ export default class AreaList extends Component {
       this.state = {
            dataSource: new ListView.DataSource({
                rowHasChanged: (row1, row2) => {
-                console.log(row1);
-                console.log(row2);
+                // console.log(row1);
+                // console.log(row2);
                 // alert(JSON.stringify(row1));
                 // alert(JSON.stringify(row2));
-                return true;
+                // return true;
                 return row1 !== row2;
                },
            }),
            list : [],
-           list_state : [],
-           loaded: false,
-           menu : false,
-           state_hide_view : this.hide_view,
-           downup : 'angle-up',
            bounceValue : new Animated.Value(0),
-           selectIndex : 0,
        };
-
-       this.showorhide=0; 
        this.readRow = this.readRow.bind(this);
        this.update_state = this.update_state.bind(this);
   }
@@ -79,17 +69,6 @@ export default class AreaList extends Component {
         />
       </View>
     );
-
-    // return (
-    //   <ScrollView 
-    //     ref={(scrollView) => { 
-    //       console.log(scrollView);
-    //       _scrollView = scrollView; 
-    //     }}
-    //     style={styles.scrollView}>
-    //     {this.state.list.map(this.createCardRow)}
-    //   </ScrollView>
-    // );
   }
 
   //获取数据
@@ -98,15 +77,9 @@ export default class AreaList extends Component {
     .then((response) => response.json())
     .then((responseJson) => {
       var datas = responseJson.regionAry[0].child;
-      var newDatas = [];
-      for(let i = 0; i < 3; i++)
-      {
-        newDatas[i] = datas[i];
-      }
-
       this.setState({
-        dataSource: this.state.dataSource.cloneWithRows(newDatas),
-        list : newDatas,
+        dataSource: this.state.dataSource.cloneWithRows(datas),
+        list : datas,
         loaded: true,
       });
     })
@@ -124,42 +97,34 @@ export default class AreaList extends Component {
     );
   };
 
-  update_state = (city) => {
+  update_state = (city, rowID) => {
     //alert(JSON.stringify(city));
-    // let _data = this.state.list.slice();
-    // for(let i in _data)
-    // {
-    //   if(_data[i].region_id == city.region_id)
-    //   {
-    //     let _state = _data[i].select ? true : false;
-    //     _data[i].select = !_state;
-    //     break;
-    //   }
-    // }
+
+    let _item = Object.assign({}, city, {'isSelected': city.isSelected ? false : true});
+    let _newData = Object.assign({}, this.state.list, {[rowID]: _item});
+
+    // Animated.timing(          // Uses easing functions  
+    //    this.state.bounceValue,    // The value to drive  
+    //    {  
+    //       toValue: _item.isSelected ? 1 : 0,
+    //       duration : 300,
+    //    }            // Configuration  
+    // ).start(() => {
+    //   this.setState({
+    //    dataSource: this.state.dataSource.cloneWithRows(_newData),
+    //   });
+    // });
     
     this.setState({
-      dataSource: this.state.dataSource.cloneWithRows(this.state.list),
-      selectIndex : city.region_id, 
+     dataSource: this.state.dataSource.cloneWithRows(_newData),
     });
-
-    Animated.timing(          // Uses easing functions  
-       this.state.bounceValue,    // The value to drive  
-       {  
-          toValue: this.showorhide==0?1:0,
-          //dataSource: this.state.dataSource.cloneWithRows(this.state.list),
-          //selectIndex : city.region_id, 
-       }            // Configuration  
-     ).start();  
-
-    // alert(JSON.stringify(_data));
-    //console.log(_data);
   };
 
   //添加每一行数据和样式
   readRow = (city, sectionID, rowID) => {
     return (
       <View>
-        <TouchableOpacity onPress={this.update_state.bind(this, city)}>
+        <TouchableOpacity onPress={this.update_state.bind(this, city, rowID)}>
           <View style={styles.city_box}>
             <Image 
               source={{uri : city.griImg}}
@@ -168,98 +133,21 @@ export default class AreaList extends Component {
 
             <View style={styles.city_txt_box}>
               <Text style={styles.city_name}>{city.region_name}</Text>
-              {this.state.selectIndex == city.region_id ?
+              {city.isSelected ?
                 <Icon name='angle-up' size={18} color="#666" /> :
                 <Icon name='angle-down' size={18} color="#666" />
               }
             </View>
           </View>
         </TouchableOpacity>
-        <View>
-          {this.state.selectIndex == city.region_id ?
-            <Animated.View style={{
-              height:this.state.showAnim.interpolate({  
-                inputRange: [0, 1],  
-                outputRange: [0, 110]  
-              }),  
-              overflow:'hidden',
-            }}>
+        <View style={styles.hideContent}>
+          {city.isSelected ?
               <Text>{city.griInfo}</Text>
-            </Animated.View> 
             : null
           }
         </View>
       </View>
     );
-  };
-
-  // 批量创建
-  createCardRow = (province, i) => {
-      let _i = i;
-      let _state = this.state.list_state[_i] != 'undefined' && this.state.list_state[_i] ? true : false;
-      //console.log(this.state.list_state[_i]);
-      //console.log(_state);
-      return (
-        <View key={_i}>
-          <TouchableOpacity onPress={(_i) => {
-            //this.setState({
-              //list_state[_i] : !this.state.list_state[_i]
-            //});
-            console.log(_i);
-          }}>
-            <View style={styles.city_box}>
-              <Image 
-                source={{uri : province.griImg}}
-                style={styles.city_img}
-              />
-
-              <View style={styles.city_txt_box}>
-                <Text style={styles.city_name}>{province.region_name}</Text>
-                {
-                  _state ?
-                    <Icon name='angle-up' size={18} color="#666" /> : 
-                    <Icon name='angle-down' size={18} color="#666" />
-                }
-              </View>
-            </View>
-          </TouchableOpacity>
-        </View>
-    );
-  };
-
-  //添加数据拉到底的事件
-  data_end = () => {
-    let toast = Toast.show('你他妈已经到底了！！！', {
-        duration: Toast.durations.LONG,
-        position: Toast.positions.CENTER,
-        shadow: true,
-        animation: true,
-        hideOnPress: true,
-        delay: 0,
-        onShow: () => {
-            // calls on toast\`s appear animation start
-        },
-        onShown: () => {
-            // calls on toast\`s appear animation end.
-        },
-        onHide: () => {
-            // calls on toast\`s hide animation start.
-        },
-        onHidden: () => {
-            // calls on toast\`s hide animation end.
-        }
-    });
-  };
-
-  chang_state = () => {
-    this.setState({
-      menu: 1
-    });
-  };
-
-  hide_view = () => {
-    let x = (true? <Text>菜单子内容</Text> : null);
-    return x;
   };
 };
 
@@ -316,9 +204,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
   },
-  down_menu : {
-    flex : 1,
-    height : 50,
-    backgroundColor : '#aaa',
+  hideContent : {
+    paddingLeft : 10,
+    paddingRight : 10,
   },
 });
