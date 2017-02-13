@@ -18,10 +18,11 @@ import WebView from './WebView';
 import ProductList from './ProductList';
 import Swiper from './Swiper';
 import Animated from './Animated_list';
-import Animated1 from './Animated1'
-import Animated2 from './Animated2'
-import Animated3 from './Animated3'
-import Animated4 from './Animated4'
+import Animated1 from './Animated1';
+import Animated2 from './Animated2';
+import Animated3 from './Animated3';
+import Animated4 from './Animated4';
+import ListContent from './ListContent';
 
 class AwesomeProject extends Component {
 
@@ -68,6 +69,7 @@ class AwesomeProject extends Component {
 						<View style={styles.btnList}>
 							<Button text="改变视图" onPress={() => navigator.push({title:'更改state',id:'StateChange'})} />
 							<Button text="省份列表" onPress={() => navigator.push({title:'省份列表',id:'AreaList'})} />
+							<Button text="ListView" onPress={() => navigator.push({title:'ListView',id:'ListContent'})} />
 							<Button text="搜索页面" onPress={() => navigator.push({title:'搜索页面',id:'SeachPage'})} />
 							<Button text="TabBarView" onPress={() => navigator.push({title:'scrollable-tab-view测试',id:'TabView'})} />
 						  	<Button text="WebView" onPress={() => navigator.push({title:'WebView页面',id:'WebView'})} />
@@ -84,6 +86,9 @@ class AwesomeProject extends Component {
 				break;
 			case 'AreaList' : 
 				return (this.return_index(route.title, navigator, <AreaList />));
+				break;
+			case 'ListContent' : 
+				return (this.return_index(route.title, navigator, <ListContent />));
 				break;
 			case 'SeachPage' : 
 				return (this.return_index(route.title, navigator, <SeachPage />));

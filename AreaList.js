@@ -13,7 +13,8 @@ import {
   ScrollView,
   Text,
   View,
-  TouchableOpacity
+  TouchableOpacity,
+  Animated,
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -30,7 +31,14 @@ export default class AreaList extends Component {
       super(props);
       this.state = {
            dataSource: new ListView.DataSource({
-               rowHasChanged: (row1, row2) => row1 !== row2,
+               rowHasChanged: (row1, row2) => {
+                console.log(row1);
+                console.log(row2);
+                // alert(JSON.stringify(row1));
+                // alert(JSON.stringify(row2));
+                return true;
+                return row1 !== row2;
+               },
            }),
            list : [],
            list_state : [],
@@ -38,8 +46,11 @@ export default class AreaList extends Component {
            menu : false,
            state_hide_view : this.hide_view,
            downup : 'angle-up',
+           bounceValue : new Animated.Value(0),
+           selectIndex : 0,
        };
 
+       this.showorhide=0; 
        this.readRow = this.readRow.bind(this);
        this.update_state = this.update_state.bind(this);
   }
@@ -86,9 +97,16 @@ export default class AreaList extends Component {
     fetch(URL)
     .then((response) => response.json())
     .then((responseJson) => {
+      var datas = responseJson.regionAry[0].child;
+      var newDatas = [];
+      for(let i = 0; i < 3; i++)
+      {
+        newDatas[i] = datas[i];
+      }
+
       this.setState({
-        dataSource: this.state.dataSource.cloneWithRows(responseJson.regionAry[0].child),
-        list : responseJson.regionAry[0].child,
+        dataSource: this.state.dataSource.cloneWithRows(newDatas),
+        list : newDatas,
         loaded: true,
       });
     })
@@ -106,39 +124,70 @@ export default class AreaList extends Component {
     );
   };
 
-  update_state = () => {
-    let {key} = this.props;
-    console.log({key});
-    // this.setState({
-    //   menu : !this.state.menu,
-    //   downup : this.state.downup == 'angle-up' ? 'angle-down' : 'angle-up',
-    // });
+  update_state = (city) => {
+    //alert(JSON.stringify(city));
+    // let _data = this.state.list.slice();
+    // for(let i in _data)
+    // {
+    //   if(_data[i].region_id == city.region_id)
+    //   {
+    //     let _state = _data[i].select ? true : false;
+    //     _data[i].select = !_state;
+    //     break;
+    //   }
+    // }
+    
+    this.setState({
+      dataSource: this.state.dataSource.cloneWithRows(this.state.list),
+      selectIndex : city.region_id, 
+    });
+
+    Animated.timing(          // Uses easing functions  
+       this.state.bounceValue,    // The value to drive  
+       {  
+          toValue: this.showorhide==0?1:0,
+          //dataSource: this.state.dataSource.cloneWithRows(this.state.list),
+          //selectIndex : city.region_id, 
+       }            // Configuration  
+     ).start();  
+
+    // alert(JSON.stringify(_data));
+    //console.log(_data);
   };
 
   //添加每一行数据和样式
-  readRow = (city) => {
-    //console.log(city.child);
-    //let city_child = city.child;
+  readRow = (city, sectionID, rowID) => {
     return (
       <View>
-        <View>
-          <TouchableOpacity onPress={this.update_state}>
-            <View style={styles.city_box}>
-              <Image 
-                source={{uri : city.griImg}}
-                style={styles.city_img}
-              />
+        <TouchableOpacity onPress={this.update_state.bind(this, city)}>
+          <View style={styles.city_box}>
+            <Image 
+              source={{uri : city.griImg}}
+              style={styles.city_img}
+            />
 
-              <View style={styles.city_txt_box}>
-                <Text style={styles.city_name}>{city.region_name}</Text>
-                {
-                  this.state.downup == 'angle-up' ?
-                    <Icon name='angle-up' size={18} color="#666" /> : 
-                    <Icon name='angle-down' size={18} color="#666" />
-                }
-              </View>
+            <View style={styles.city_txt_box}>
+              <Text style={styles.city_name}>{city.region_name}</Text>
+              {this.state.selectIndex == city.region_id ?
+                <Icon name='angle-up' size={18} color="#666" /> :
+                <Icon name='angle-down' size={18} color="#666" />
+              }
             </View>
-          </TouchableOpacity>
+          </View>
+        </TouchableOpacity>
+        <View>
+          {this.state.selectIndex == city.region_id ?
+            <Animated.View style={{
+              height:this.state.showAnim.interpolate({  
+                inputRange: [0, 1],  
+                outputRange: [0, 110]  
+              }),  
+              overflow:'hidden',
+            }}>
+              <Text>{city.griInfo}</Text>
+            </Animated.View> 
+            : null
+          }
         </View>
       </View>
     );
@@ -176,17 +225,6 @@ export default class AreaList extends Component {
           </TouchableOpacity>
         </View>
     );
-  };
-
-  show_downup = () => {
-    if(this.state.downup == 'angle-up')
-    {
-      return <Icon name='angle-up' size={18} color="#666" />
-    }
-    else
-    {
-      return <Icon name='angle-down' size={18} color="#666" />
-    }
   };
 
   //添加数据拉到底的事件
