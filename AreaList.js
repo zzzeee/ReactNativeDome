@@ -1,9 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
 import React, { Component } from 'react';
 import {
   AppRegistry,
@@ -117,7 +111,9 @@ export default class AreaList extends Component {
     
     this.setState({
      dataSource: this.state.dataSource.cloneWithRows(_newData),
+     list : _newData,
     });
+
   };
 
   //添加每一行数据和样式
@@ -132,7 +128,7 @@ export default class AreaList extends Component {
             />
 
             <View style={styles.city_txt_box}>
-              <Text style={styles.city_name}>{city.region_name}</Text>
+              <Text style={styles.city_name}>{'name:' + city.region_name}</Text>
               {city.isSelected ?
                 <Icon name='angle-up' size={18} color="#666" /> :
                 <Icon name='angle-down' size={18} color="#666" />
@@ -142,7 +138,10 @@ export default class AreaList extends Component {
         </TouchableOpacity>
         <View style={styles.hideContent}>
           {city.isSelected ?
-              <Text>{city.griInfo}</Text>
+              <Text style={{
+                lineHeight : 30,
+                paddingBottom : 20,
+              }}>{city.griInfo}</Text>
             : null
           }
         </View>
