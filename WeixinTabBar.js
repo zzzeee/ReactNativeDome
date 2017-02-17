@@ -12,6 +12,7 @@ export default class WeixinTabBar extends Component {
 
 	renderTabOption(tab, i) {
 	  	const color = this.props.activeTab == i ? "green" : "#666"; // 判断i是否是当前选中的tab，设置不同的颜色
+	  	//console.log(this.props);
 	  	return (
 		    <TouchableOpacity key={i} onPress={()=>this.props.goToPage(i)} style={styles.tab}>
 		        <View style={styles.tabItem}>

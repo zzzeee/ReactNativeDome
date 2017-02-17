@@ -8,25 +8,33 @@ import {
 import ScrollableTabView, {DefaultTabBar, } from 'react-native-scrollable-tab-view';
 import Icon from 'react-native-vector-icons/Ionicons';
 import WeixinTabBar from './WeixinTabBar';
+import Button from './Button';
 
 export default class TabView extends Component {
 	constructor(props) {
 	  	super(props);
 	  	this.state = {
+	  		selIndex: 0,
 	      	tabNames: ['微信', '通讯录', '发现', '我'],
 	      	tabIconNames: ['ios-chatbubbles-outline', 'ios-ionitron-outline', 'ios-compass-outline', 'ios-person-outline'],
 	      	tabSelectIconNames: ['ios-chatbubbles', 'ios-ionitron', 'ios-compass', 'ios-person'],
 	  	};
 	}
 
+	componentDidMount() {
+		//console.log(this.refs.tabView1);
+	}
+
   	render() {
+  		var that = this;
     	return (
     		<ScrollableTabView
 				renderTabBar={() => <WeixinTabBar tabNames={this.state.tabNames} tabIconNames={this.state.tabIconNames} tabSelectIconNames={this.state.tabSelectIconNames} />}
 				//renderTabBar={() => <DefaultTabBar />}
 				//style={styles.menu}
+				ref="tabView1"
 				// 默认打开第几个（0为第一个）
-				initialPage={0}
+				initialPage={this.state.selIndex}
 				//"top", "bottom", "overlayTop", "overlayBottom"
 				tabBarPosition='overlayBottom'
 				// 选中的下划线颜色
@@ -49,6 +57,10 @@ export default class TabView extends Component {
 				<View style={styles.flex} tabLabel='Tab2'>
 					<Icon name="ios-ionitron-outline" size={20} color="#888" />
 					<Text>第二页</Text>
+					<Button text='跳到最后一页' onPress={() => {
+						// alert(this.refs.tabView1.props.children.length);
+						this.refs.tabView1.goToPage(this.refs.tabView1.props.children.length - 1);
+					}} />
 				</View>
 				<View style={styles.flex} tabLabel='Tab3'>
 					<Icon name="ios-compass-outline" size={20} color="#888" />

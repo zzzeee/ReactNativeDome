@@ -67,7 +67,13 @@ export default class AreaList extends Component {
 
   //获取数据
   fetchDate = () => {
-    fetch(URL)
+    fetch(URL, {
+      method: 'GET',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    })
     .then((response) => response.json())
     .then((responseJson) => {
       var datas = responseJson.regionAry[0].child;
