@@ -76,6 +76,7 @@ class AwesomeProject extends Component {
 					        <Button text="商品列表" onPress={() => navigator.push({title:'商品列表',id:'ProductList'})} />
 					        <Button text="图片轮播" onPress={() => navigator.push({title:'图片轮播',id:'Swiper'})} />
 					        <Button text="Animated动画" onPress={() => navigator.push({title:'Animated动画',id:'Animated'})} />
+							<Button text="弹性拉伸" onPress={() => navigator.push({title:'Animated动画',id:'Animated'})} />
 		            	</View>
 					</View>
 				);
