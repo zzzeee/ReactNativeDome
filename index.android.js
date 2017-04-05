@@ -23,6 +23,7 @@ import Animated2 from './Animated2';
 import Animated3 from './Animated3';
 import Animated4 from './Animated4';
 import ListContent from './ListContent';
+import SwiperDiy from './SwiperDiy';
 
 class AwesomeProject extends Component {
 
@@ -76,51 +77,39 @@ class AwesomeProject extends Component {
 					        <Button text="商品列表" onPress={() => navigator.push({title:'商品列表',id:'ProductList'})} />
 					        <Button text="图片轮播" onPress={() => navigator.push({title:'图片轮播',id:'Swiper'})} />
 					        <Button text="Animated动画" onPress={() => navigator.push({title:'Animated动画',id:'Animated'})} />
-							<Button text="弹性拉伸" onPress={() => navigator.push({title:'Animated动画',id:'Animated'})} />
+							<Button text="自制swiper" onPress={() => navigator.push({title:'自制swiper',id:'SwiperDiy'})} />
 		            	</View>
 					</View>
 				);
-				break;
 
 			case 'StateChange' : 
 				return (this.return_index(route.title, navigator, <StateChange />));
-				break;
 			case 'AreaList' : 
 				return (this.return_index(route.title, navigator, <AreaList />));
-				break;
 			case 'ListContent' : 
 				return (this.return_index(route.title, navigator, <ListContent />));
-				break;
 			case 'SeachPage' : 
 				return (this.return_index(route.title, navigator, <SeachPage />));
-				break;
 			case 'TabView' : 
 				return (this.return_index(route.title, navigator, <TabView />));
-				break;
 		    case 'WebView' : 
 		        return (this.return_index(route.title, navigator, <WebView />));
-		        break;
 		    case 'ProductList' : 
 		        return (this.return_index(route.title, navigator, <ProductList />));
-		        break;
 		    case 'Swiper' :
 		        return (this.return_index(route.title, navigator, <Swiper />));
-		        break;
 		    case 'Animated' :
 		        return (this.return_index(route.title, navigator, <Animated route={route} navigator={navigator} />));
-		        break;
 		    case 'Animated1' :
 		        return (this.return_animated_list(route.title, navigator, <Animated1 />));
-		        break;
 		    case 'Animated2' :
 		        return (this.return_animated_list(route.title, navigator, <Animated2 />));
-		        break;
 		    case 'Animated3' :
 		        return (this.return_animated_list(route.title, navigator, <Animated3 />));
-		        break;
 	        case 'Animated4' :
 		        return (this.return_animated_list(route.title, navigator, <Animated4 />));
-		        break;
+			case 'SwiperDiy' :
+		        return (this.return_animated_list(route.title, navigator, <SwiperDiy />));
 			default : 
 				return false;
 		}
