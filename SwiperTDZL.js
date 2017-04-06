@@ -15,6 +15,7 @@ import {
     Dimensions,
     PanResponder,
     propTypes,
+    Platform,
 } from 'react-native';
 
 var {height, width} = Dimensions.get('window');
@@ -23,7 +24,7 @@ export default class SwiperTDZL extends Component {
     // 默认参数
     static defaultProps = {
         open3D: true,       //开启3D
-        radius: 50,         //3D半径 (需开启3D)
+        radius: Platform.OS === 'android' ? 50 : 0,     //3D半径 (需开启3D)
         autoPlay: true,     //自动轮播
         playTime: 500,      //播放间隔
         playNumber: 0,      //播放轮数 (数值大于0时有效)
@@ -170,7 +171,9 @@ export default class SwiperTDZL extends Component {
     // 基本函数
     render() {
         const { style, children } = this.props;
-        let r = Math.sqrt(3)/2 * width + 150 + this.props.radius;
+        let r = Math.sqrt(3)/2 * width + this.props.radius;
+        if(Platform.OS === 'android') r += 150;
+
         return (
             <View style={[].concat(styles.container, style)} {...this.panResponderInit.panHandlers}>
                 {React.Children.map(children, (child, i) => {

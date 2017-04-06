@@ -24,11 +24,11 @@ export default class SwiperDiy extends Component {
   //基本方法， 默认执行
   render() {
       let obj = {
-        open3D: false,       //开启3D
-        radius: 50,         //3D半径
+        open3D: true,       //开启3D
+        radius: 0,         //3D半径
         autoPlay: true,     //自动轮播
         playTime: 300,      //播放间隔
-        playNumber: 3,      //播放轮数 (数值大于0时有效)
+        playNumber: 0,      //播放轮数 (数值大于0时有效)
         friction: 4,        //摩擦力
         tension: 90,        //张力
         direction: 'right', //默认方向(顺时针)
