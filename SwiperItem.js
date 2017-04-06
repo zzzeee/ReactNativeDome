@@ -21,6 +21,7 @@ export default class SwiperItem extends Component {
           width : null,
        };
        
+       this.timer = [];
        this.position = new Animated.Value(0);
        this.positionValue = 0;
        this.position.addListener(v => {
@@ -30,6 +31,41 @@ export default class SwiperItem extends Component {
 
   //数据加载完毕后执行
   componentDidMount() {
+      this.autoLoop();
+  }
+
+  //自动跳转
+  autoLoop = () => {
+      console.log(this.positionValue);
+      let that = this;
+      const count = React.Children.count(this.props.children);
+      let next_position = this.positionValue - 1;
+      
+      if(next_position < 0) {
+            next_position += count;
+            that.position.setValue(that.positionValue + count);
+        }else if(next_position >= count) {
+            next_position -= count;
+            that.position.setValue(that.positionValue - count);
+        }
+
+        let _timer = setTimeout(() => {
+            Animated.spring(that.position, {
+                toValue: next_position,
+                friction: 7,
+                tension: 40,
+            }).start(that.autoLoop);
+        }, 600);
+        this.timer.push(_timer);
+  };
+
+  componentWillUnmount() {
+    // 如果存在this.timer，则使用clearTimeout清空。
+    // 如果你使用多个timer，那么用多个变量，或者用个数组来保存引用，然后逐个clear
+    //this.timer && clearTimeout(this.timer);
+    for(let t of this.timer) {
+        clearTimeout(t);
+    }
   }
 
     _panResponder = PanResponder.create({
@@ -47,6 +83,9 @@ export default class SwiperItem extends Component {
         
         this.position.setOffset(this.positionValue);
         this.position.setValue(0);
+        for(let t in this.timer) {
+            clearTimeout(this.timer[t]);
+        }
       },
       onPanResponderMove: (evt, gestureState) => {
         // 最近一次的移动距离为gestureState.move{X,Y}
@@ -62,11 +101,12 @@ export default class SwiperItem extends Component {
           //console.groupEnd();
         // 用户放开了所有的触摸点，且此时视图已经成为了响应者。
         // 一般来说这意味着一个手势操作已经成功完成。
+        let that = this;
         this.position.flattenOffset();
         const count = React.Children.count(this.props.children);
         // -------------------允许循环轮播 start-----------------------
-        // const left = Math.max(0, Math.floor(this.positionValue));
-        // const right = Math.min(count - 1, left + 1);
+        //const left = Math.max(0, Math.floor(this.positionValue));
+        //const right = Math.min(count - 1, left + 1);
         // -------------------允许循环轮播 end-----------------------
         const left = Math.floor(this.positionValue);
         const right = left + 1;
@@ -93,7 +133,7 @@ export default class SwiperItem extends Component {
             toValue: result,
             friction: 5,
             tension: 60,
-        }).start();
+        }).start(that.autoLoop);
       },
       onPanResponderTerminate: (evt, gestureState) => {
           console.log('onPanResponderTerminate');
@@ -111,14 +151,37 @@ export default class SwiperItem extends Component {
     const { style, children } = this.props;
     //const r = Math.sqrt(3)/2 * width;
     const r = Math.sqrt(3)/2 * width + 200;
+    const count = React.Children.count(this.props.children);
     return (
         <View style={[].concat(styles.container, style)} {...this._panResponder.panHandlers}>
             {React.Children.map(children, (child, i)=>{
+                let i_before = i == 0 ? count - 1 : i - 1;
+                let i_after = i == count - 1 ? 0 : i + 1;
+                let input_arr = [], output_arr = [];
+
+                for(let c = 0; c < count; c++) {
+                    if(c == i) {
+                        output_arr.push(9);
+                    }else if(c == i_before) {
+                        output_arr.push(8);
+                    }else if(c == i_after) {
+                        output_arr.push(8);
+                    }else {
+                        output_arr.push(1);
+                    }
+                    input_arr.push(c);
+                }
+
                 return (
                     <Animated.View 
                         key={i} 
                         style={[styles.item, {
-                            zIndex: (this.position._value == i ? 99 : 1),
+                            zIndex: this.position.interpolate({
+                                //inputRange: [i - 1, i, i + 1],
+                                //outputRange: [8, 9, 8],
+                                inputRange: input_arr,
+                                outputRange: output_arr,
+                            }),
                             transform: [
                                 // -------------------3D效果的一些样式 start-----------------------
                                 {perspective: 850},
