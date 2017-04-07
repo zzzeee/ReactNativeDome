@@ -48,12 +48,6 @@ export default class SwiperDiy extends Component {
                 <View style={[styles.page, styles.page4]}>
                     <Text style={styles.pageText}>我是第四页</Text>
                 </View>
-                <View style={styles.page}>
-                    <Text style={styles.pageText}>我是第五页</Text>
-                </View>
-                <View style={[styles.page, styles.page6]}>
-                    <Text style={styles.pageText}>我是第六页</Text>
-                </View>
             </SwiperItem>
         </View>
     );
